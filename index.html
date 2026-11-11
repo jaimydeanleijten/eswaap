@@ -357,6 +357,8 @@ h1,h2,h3,h4,.oswald{font-family:"Oswald","Arial Narrow",sans-serif}
 .form textarea{min-height:96px;padding:12px 14px;resize:vertical}
 .form .knop{width:100%}
 .form .tip{margin-top:10px;color:var(--zacht);font-size:13px}
+.form-melding{margin-top:12px;padding:12px 14px;border-radius:10px;background:#eaf6ee;color:#1e6b3a;font-size:14.5px;line-height:1.45}
+.form-melding.fout-melding{background:#fbeceb;color:#a12d22}
 .soort{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
 .soort label{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;margin:0;border:1.5px solid var(--grijs-l);border-radius:10px;cursor:pointer;font-size:14.5px}
 .soort label{position:relative}
@@ -689,7 +691,7 @@ h1,h2,h3,h4,.oswald{font-family:"Oswald","Arial Narrow",sans-serif}
         </div>
       </article>
     </div>
-    <div class="cta-band onthul"><div><h3>Welke klus heeft u liggen?</h3><p>Vraag een gratis offerte aan, of stel eerst uw vraag via WhatsApp.</p></div><div class="acties"><a class="knop licht" href="#aanvraag" data-soort="offerte">Vraag een offerte aan</a><a class="knop rand" href="#aanvraag" data-soort="vraag">Stel een vraag</a></div></div>
+    <div class="cta-band onthul"><div><h3>Welke klus heeft u liggen?</h3><p>Vraag een gratis offerte aan, of stel eerst uw vraag.</p></div><div class="acties"><a class="knop licht" href="#aanvraag" data-soort="offerte">Vraag een offerte aan</a><a class="knop rand" href="#aanvraag" data-soort="vraag">Stel een vraag</a></div></div>
   </div>
 </section>
 
@@ -824,12 +826,14 @@ h1,h2,h3,h4,.oswald{font-family:"Oswald","Arial Narrow",sans-serif}
     <div class="aan-intro onthul">
       <div class="pill"><i></i>Offerte aanvragen</div>
       <h2 class="titel">Vertel over uw klus. <strong>Elroy denkt mee.</strong></h2>
-      <p class="lead">Vul het formulier in. Uw WhatsApp opent met een kant-en-klaar bericht; u drukt zelf op verzenden en kunt er meteen foto's bij doen.</p>
+      <p class="lead">Vul het formulier in. Voor een offerte opent uw WhatsApp met een kant-en-klaar bericht, zodat u er meteen foto's bij kunt doen. Een vraag komt direct per e-mail bij Elroy binnen.</p>
     </div>
-    <form class="form onthul" id="offerteform" novalidate>
+    <form class="form onthul" id="offerteform" name="vraag" method="POST" data-netlify="true" netlify-honeypot="bot-veld" novalidate>
+      <input type="hidden" name="form-name" value="vraag"><input type="hidden" name="subject" id="f-onderwerp" value="Nieuwe vraag via de website">
+      <p hidden><label>Niet invullen: <input name="bot-veld" tabindex="-1" autocomplete="off"></label></p>
       <div class="soort" role="radiogroup" aria-label="Wat wilt u?"><label><input type="radio" name="soort" value="offerte" checked><span>Offerte aanvragen</span></label><label><input type="radio" name="soort" value="vraag"><span>Vraag stellen</span></label></div>
       <fieldset class="veldset">
-        <legend>Soort klus</legend>
+        <legend id="f-soort-label">Soort klus</legend>
         <div class="chips"><label class="chip"><input type="radio" name="dienst" value="Renovatie" checked><span>Renovatie</span></label><label class="chip"><input type="radio" name="dienst" value="Onderhoud"><span>Onderhoud</span></label><label class="chip"><input type="radio" name="dienst" value="Reparatie"><span>Reparatie</span></label><label class="chip"><input type="radio" name="dienst" value="Timmerwerk en kozijnen"><span>Timmerwerk en kozijnen</span></label><label class="chip"><input type="radio" name="dienst" value="Elektra"><span>Elektra</span></label><label class="chip"><input type="radio" name="dienst" value="Energielabel"><span>Energielabel</span></label><label class="chip"><input type="radio" name="dienst" value="Riool"><span>Riool</span></label><label class="chip"><input type="radio" name="dienst" value="Anders"><span>Anders</span></label></div>
       </fieldset>
       <div class="twee">
@@ -837,10 +841,12 @@ h1,h2,h3,h4,.oswald{font-family:"Oswald","Arial Narrow",sans-serif}
         <div class="veld"><label for="f-tel">Telefoon</label><input id="f-tel" name="tel" type="tel" inputmode="tel" autocomplete="tel" enterkeyhint="next" placeholder="06 12345678" required aria-describedby="f-tel-fout"><small class="fout-tekst" id="f-tel-fout" hidden>Vul een telefoonnummer in, zodat Elroy u kan terugbellen.</small></div>
       </div>
       <div class="veld"><label for="f-plaats">Postcode of plaats <em>(optioneel)</em></label><input id="f-plaats" name="plaats" autocomplete="postal-code" autocapitalize="characters" enterkeyhint="next" placeholder="Bijvoorbeeld 3608 VE of Maarssen"></div>
-      <div class="veld"><label for="f-omschr" id="f-omschr-label">Korte omschrijving van de klus</label><textarea id="f-omschr" name="omschrijving" rows="3" enterkeyhint="enter" placeholder="Bijvoorbeeld: dakkapel vervangen, ongeveer 3 meter breed"></textarea></div>
+      <div class="veld" id="f-mail-veld" hidden><label for="f-mail">E-mailadres <em>(optioneel)</em></label><input id="f-mail" name="email" type="email" inputmode="email" autocomplete="email" enterkeyhint="next" placeholder="naam@voorbeeld.nl"></div>
+      <div class="veld"><label for="f-omschr" id="f-omschr-label">Korte omschrijving van de klus</label><textarea id="f-omschr" name="omschrijving" rows="3" enterkeyhint="enter" placeholder="Bijvoorbeeld: dakkapel vervangen, ongeveer 3 meter breed" aria-describedby="f-omschr-fout"></textarea><small class="fout-tekst" id="f-omschr-fout" hidden>Schrijf hier uw vraag.</small></div>
       <div class="veld" id="f-datum-veld"><label for="f-datum">Gewenste startdatum <em>(optioneel)</em></label><input id="f-datum" name="datum" type="date"></div>
       <button class="knop zwart" type="submit" id="f-knop">Verstuur via WhatsApp</button>
-      <p class="tip">Tip: stuur in WhatsApp meteen een paar foto's van de klus mee. Er wordt niets verstuurd voordat u zelf op verzenden drukt.</p>
+      <p class="tip" id="f-tip">Tip: stuur in WhatsApp meteen een paar foto's van de klus mee. Er wordt niets verstuurd voordat u zelf op verzenden drukt.</p>
+      <p class="form-melding" id="f-melding" role="status" aria-live="polite" hidden></p>
     </form>
     <ul class="contact-lijst onthul" id="contact">
         <li><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2z"/></svg></span><div><a href="tel:+31639549706">06 39549706</a><small>Bellen: ma–vr 8:00–17:00 · WhatsApp: 24/7, ook in het weekend</small></div></li>
@@ -1007,8 +1013,14 @@ h1,h2,h3,h4,.oswald{font-family:"Oswald","Arial Narrow",sans-serif}
   function soortWissel(){
     var vraag = form.querySelector('input[name=soort]:checked').value === 'vraag';
     $('f-datum-veld').hidden = vraag;
+    $('f-mail-veld').hidden = !vraag;
+    $('f-soort-label').textContent = vraag ? 'Waar gaat uw vraag over?' : 'Soort klus';
     $('f-omschr-label').textContent = vraag ? 'Uw vraag' : 'Korte omschrijving van de klus';
-    $('f-knop').textContent = vraag ? 'Stel uw vraag via WhatsApp' : 'Vraag offerte aan via WhatsApp';
+    $('f-omschr').placeholder = vraag ? 'Bijvoorbeeld: komen jullie ook in Breukelen, en doen jullie kleine reparaties?' : 'Bijvoorbeeld: dakkapel vervangen, ongeveer 3 meter breed';
+    $('f-knop').textContent = vraag ? 'Verstuur uw vraag per e-mail' : 'Vraag offerte aan via WhatsApp';
+    $('f-tip').textContent = vraag ? 'Uw vraag gaat direct per e-mail naar Elroy. Hij neemt zo snel mogelijk contact met u op, telefonisch of per e-mail.' : "Tip: stuur in WhatsApp meteen een paar foto's van de klus mee. Er wordt niets verstuurd voordat u zelf op verzenden drukt.";
+    $('f-melding').hidden = true;
+    $('f-omschr').parentElement.classList.remove('fout'); $('f-omschr-fout').hidden = true;
   }
   form.querySelectorAll('input[name=soort]').forEach(function(r){ r.addEventListener('change', soortWissel); });
   soortWissel();
@@ -1018,17 +1030,21 @@ h1,h2,h3,h4,.oswald{font-family:"Oswald","Arial Narrow",sans-serif}
     if (a.dataset.dienst){ var c = form.querySelector('input[name=dienst][value="' + a.dataset.dienst + '"]'); if (c) c.checked = true; }
     if (window.matchMedia('(max-width: 1024px)').matches && a.getAttribute('href') === '#aanvraag'){ e.preventDefault(); form.scrollIntoView({behavior: rustig ? 'auto' : 'smooth', block: 'start'}); }
   });
-  ['f-naam','f-tel'].forEach(function(id){ $(id).addEventListener('input', function(){ $(id).parentElement.classList.remove('fout'); $(id + '-fout').hidden = true; $(id).removeAttribute('aria-invalid'); }); });
+  ['f-naam','f-tel','f-omschr'].forEach(function(id){ $(id).addEventListener('input', function(){ $(id).parentElement.classList.remove('fout'); $(id + '-fout').hidden = true; $(id).removeAttribute('aria-invalid'); }); });
   form.addEventListener('submit', function(e){
     e.preventDefault();
     var naam = $('f-naam').value.trim(), tel = $('f-tel').value.trim(), eerste = null;
-    [['f-naam', naam.length > 1], ['f-tel', tel.replace(/\D/g,'').length >= 9]].forEach(function(v){
+    var isVraag = form.querySelector('input[name=soort]:checked').value === 'vraag';
+    var checks = [['f-naam', naam.length > 1], ['f-tel', tel.replace(/\D/g,'').length >= 9]];
+    if (isVraag) checks.push(['f-omschr', $('f-omschr').value.trim().length > 2]);
+    checks.forEach(function(v){
       var veld = $(v[0]).parentElement, ok = v[1];
       veld.classList.toggle('fout', !ok); $(v[0] + '-fout').hidden = ok; $(v[0]).setAttribute('aria-invalid', ok ? 'false' : 'true');
       if (!ok && !eerste) eerste = $(v[0]);
     });
     if (eerste){ eerste.focus(); eerste.scrollIntoView({block:'center', behavior: rustig ? 'auto' : 'smooth'}); return; }
-    var vraag = form.querySelector('input[name=soort]:checked').value === 'vraag';
+    var vraag = isVraag;
+    if (vraag){ verstuurVraag(naam, tel); return; }
     var regels = ['Hallo Elroy, ' + (vraag ? 'ik heb een vraag.' : 'ik wil graag een offerte.'), 'Naam: ' + naam, 'Telefoon: ' + tel];
     if ($('f-plaats').value.trim()) regels.push('Postcode/plaats: ' + $('f-plaats').value.trim());
     regels.push('Klus: ' + form.querySelector('input[name=dienst]:checked').value);
@@ -1036,6 +1052,26 @@ h1,h2,h3,h4,.oswald{font-family:"Oswald","Arial Narrow",sans-serif}
     if (!vraag && $('f-datum').value) regels.push('Gewenste start: ' + new Date($('f-datum').value).toLocaleDateString('nl-NL'));
     window.location.href = 'https://wa.me/31639549706?text=' + encodeURIComponent(regels.join('\n'));
   });
+  function melding(tekst, fout){ var m = $('f-melding'); m.textContent = tekst; m.classList.toggle('fout-melding', !!fout); m.hidden = false; }
+  function verstuurVraag(naam, tel){
+    var knop = $('f-knop'), oud = knop.textContent;
+    $('f-onderwerp').value = 'Vraag via de website van ' + naam;
+    var data = new URLSearchParams(new FormData(form)).toString();
+    knop.disabled = true; knop.textContent = 'Bezig met versturen…';
+    fetch('/', {method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: data})
+      .then(function(r){ if (!r.ok) throw new Error(r.status);
+        form.reset(); form.querySelector('input[name=soort][value=vraag]').checked = true; soortWissel();
+        melding('Bedankt, ' + naam.split(' ')[0] + '! Uw vraag is verstuurd. Elroy neemt zo snel mogelijk contact met u op.');
+      })
+      .catch(function(){
+        var tekst = ['Naam: ' + naam, 'Telefoon: ' + tel, 'Waar gaat het over: ' + form.querySelector('input[name=dienst]:checked').value];
+        if ($('f-plaats').value.trim()) tekst.push('Postcode/plaats: ' + $('f-plaats').value.trim());
+        tekst.push('', $('f-omschr').value.trim());
+        melding('Versturen lukte niet. Uw e-mailprogramma wordt geopend met uw vraag erin; druk daar op verzenden. Of bel 06 39549706.', true);
+        window.location.href = 'mailto:e.swaap@outlook.com?subject=' + encodeURIComponent('Vraag via de website') + '&body=' + encodeURIComponent(tekst.join('\n'));
+      })
+      .then(function(){ knop.disabled = false; knop.textContent = oud; });
+  }
 })();
 </script>
 <script>(function(){try{var v=document.querySelector("video.banner-foto");if(!v)return;if(matchMedia("(prefers-reduced-motion: reduce)").matches){v.removeAttribute("autoplay");v.pause();}}catch(e){}})();
